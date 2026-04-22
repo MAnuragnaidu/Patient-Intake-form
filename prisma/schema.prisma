@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  role      String   @default("PATIENT") // PATIENT or ADMIN
+  password  String   // Added for simple auth
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  patients  Patient[]
+}
+
+model Patient {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  
+  // 1. Patient Characteristics
+  name             String
+  mrn              String
+  contactPhone     String
+  placeOfLiving    String
+  referredBy       String
+  dateOfBirth      String
+  currentAge       Int
+  ageAtDiagnosis   Int
+  sex              String
+  smokingStatus    String
+
+  // 2. Disease Characteristics
+  primaryDiagnosis  String
+  diseaseDuration   String
+  montrealClass     String
+  previousSurgeries String // Stored as JSON string
+
+  // 3. Disease Activity & Symptoms
+  currentDiseaseActivity String
+  stoolFrequency         String
+  bloodInStool           String
+  abdominalPain          String
+  impactOnQoL            String
+  weightLoss             String
+
+  // 4. Laboratory & Investigations
+  dateMostRecentLabs   String
+  dateMostRecentColono String
+  recentLabValues      String
+  colonoscopyFindings  String
+  recentImaging        String
+  mostRecentDexa       String
+
+  // 5. Treatment History
+  currentIbdMedications   String
+  failedTreatments        String
+  tdmResults              String
+  currentSupplements      String
+  responseToTreatment     String
+  steroidUse              String
+  previousTreatmentsTried String // Stored as JSON string
+
+  // 6. Infection Screening & Vaccines
+  tbScreening      String
+  hepBSurfaceAg    String
+  hepBSurfaceAb    String
+  hepBCoreAb       String
+  antiHcv          String
+  antiHiv          String
+
+  influenza        String
+  covid19          String
+  pneumococcal     String
+  hepatitisB       String
+  hepatitisA       String
+  hepatitisE       String
+  zoster           String
+  mmrVaricella     String
+  tetanusTdap      String
+
+  // 7. Comorbidities & Final Details
+  comorbidities         String // Stored as JSON string
+  extraintestinalManif  String
+  pregnancyPlanning     String
+  preferredLanguage     String
+  occupation            String
+  specialConsiderations String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
